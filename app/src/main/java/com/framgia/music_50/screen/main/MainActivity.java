@@ -1,17 +1,22 @@
 package com.framgia.music_50.screen.main;
 
-import android.os.Bundle;
-import com.framgia.music_50.R;
 import com.framgia.music_50.data.model.Track;
 import com.framgia.music_50.data.source.remote.OnFetchDataListener;
 import com.framgia.music_50.screen.BaseActivity;
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements MainContract.View, OnFetchDataListener<Track> {
+public class MainActivity extends BaseActivity implements MainContract.View,
+        OnFetchDataListener<Track> {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public void initView() {
+    }
+
+    @Override
+    public void initData() {
+    }
+
+    @Override
+    public void initListener() {
     }
 
     @Override
