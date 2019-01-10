@@ -2,9 +2,6 @@ package com.framgia.music_50.data.source.remote;
 
 import android.os.AsyncTask;
 import com.framgia.music_50.data.model.Track;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +9,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import static com.framgia.music_50.utils.Constant.COLLECTION;
 import static com.framgia.music_50.utils.Constant.GET_METHOD;
 import static com.framgia.music_50.utils.Constant.REQUEST_TIMEOUT;
@@ -20,7 +20,7 @@ import static com.framgia.music_50.utils.Constant.USER;
 public class GetTracksAsyncTask extends AsyncTask<String, Void, List<Track>> {
     private OnFetchDataListener<Track> mListener;
 
-    public GetTracksAsyncTask(OnFetchDataListener<Track> listener) {
+    GetTracksAsyncTask(OnFetchDataListener<Track> listener) {
         mListener = listener;
     }
 
@@ -65,17 +65,17 @@ public class GetTracksAsyncTask extends AsyncTask<String, Void, List<Track>> {
         JSONArray jsonArray = rootObject.getJSONArray(COLLECTION);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject object = jsonArray.getJSONObject(i).getJSONObject(Track.TrackEntry.TRACK);
-            Track track = new Track.TrackBuilder()
-                    .setTitle(object.getString(Track.TrackEntry.TITLE))
-                    .setArtworkUrl(object.getString(Track.TrackEntry.ARTWORK_URL))
-                    .setArtistName(object.getJSONObject(USER)
-                            .getString(Track.TrackEntry.ARTIST_NAME))
-                    .setAvatarUrl(object.getJSONObject(USER)
-                            .getString(Track.TrackEntry.ARTWORK_URL))
-                    .setDownloadable(object.getBoolean(Track.TrackEntry.DOWNLOADABLE))
-                    .setDownloadUrl(object.getString(Track.TrackEntry.DOWNLOAD_URL))
-                    .setDuration(object.getInt(Track.TrackEntry.DURATION))
-                    .build();
+            Track track =
+                    new Track.TrackBuilder().setTitle(object.getString(Track.TrackEntry.TITLE))
+                            .setArtworkUrl(object.getString(Track.TrackEntry.ARTWORK_URL))
+                            .setArtistName(object.getJSONObject(USER)
+                                    .getString(Track.TrackEntry.ARTIST_NAME))
+                            .setAvatarUrl(object.getJSONObject(USER)
+                                    .getString(Track.TrackEntry.AVATAR_URL))
+                            .setDownloadable(object.getBoolean(Track.TrackEntry.DOWNLOADABLE))
+                            .setDownloadUrl(object.getString(Track.TrackEntry.DOWNLOAD_URL))
+                            .setDuration(object.getInt(Track.TrackEntry.DURATION))
+                            .build();
             tracks.add(track);
         }
         return tracks;

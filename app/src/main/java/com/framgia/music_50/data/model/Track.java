@@ -172,6 +172,7 @@ public class Track implements Parcelable {
         public static final String TRACK = "track";
         public static final String TITLE = "title";
         public static final String ARTWORK_URL = "artwork_url";
+        public static final String AVATAR_URL = "avatar_url";
         public static final String ARTIST_NAME = "username";
         public static final String DOWNLOADABLE = "downloadable";
         public static final String DOWNLOAD_URL = "download_url";

@@ -13,4 +13,7 @@ public class Constant {
     public static final String GENRE = "&genre=soundcloud%3Agenres%3A";
     public static final String LIMIT = "&limit=";
     public static final String CLIENT_ID = "&client_id=" + BuildConfig.API_KEY;
+    public static final int TRACK_LIMIT = 10;
+    public static final String TRENDING_MUSIC_URL =
+            BASE_URL + CHART + KIND + LIMIT + TRACK_LIMIT + CLIENT_ID;
 }
