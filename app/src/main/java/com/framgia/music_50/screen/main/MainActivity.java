@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 import com.framgia.music_50.R;
 import com.framgia.music_50.data.model.Track;
@@ -40,9 +39,8 @@ public class MainActivity extends BaseActivity
     @Override
     public void initData() {
         mNavigator = new Navigator(this);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.layoutContainer, new HomeFragment());
-        transaction.commit();
+        mNavigator.goNextChildFragment(getSupportFragmentManager(), R.id.layoutContainer,
+                HomeFragment.newInstance(), false, HomeFragment.TAG);
     }
 
     @Override

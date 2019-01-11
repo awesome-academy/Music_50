@@ -9,10 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.framgia.music_50.R;
+import com.framgia.music_50.data.model.Genre;
 import com.framgia.music_50.data.model.Track;
 import com.framgia.music_50.data.repository.TrackRepository;
 import com.framgia.music_50.data.source.local.TrackLocalDataSource;
 import com.framgia.music_50.data.source.remote.TrackRemoteDataSource;
+import com.framgia.music_50.screen.home.adapter.GenreAdapter;
 import com.framgia.music_50.screen.home.adapter.TrendingTrackAdapter;
 import com.framgia.music_50.utils.OnItemRecyclerViewClickListener;
 import java.util.List;
@@ -21,6 +23,7 @@ public class HomeFragment extends Fragment
         implements HomeContract.View, OnItemRecyclerViewClickListener<Object> {
     public static final String TAG = HomeFragment.class.getSimpleName();
     private TrendingTrackAdapter mTrendingTrackAdapter;
+    private GenreAdapter mGenreAdapter;
 
     public static HomeFragment newInstance() {
         HomeFragment homeFragment = new HomeFragment();
@@ -48,12 +51,27 @@ public class HomeFragment extends Fragment
 
     @Override
     public void onGetTrendingTrackError(Exception e) {
+        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onGetMusicGenreSuccess(List<Genre> genres) {
+        if (genres != null) {
+            mGenreAdapter.updateData(genres);
+        }
+    }
+
+    @Override
+    public void onGetMusicGenreError(Exception e) {
+        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onItemClickListener(Object item) {
         if (item instanceof Track) {
             Toast.makeText(getContext(), ((Track) item).getTitle(), Toast.LENGTH_SHORT).show();
+        } else if (item instanceof Genre) {
+            Toast.makeText(getContext(), ((Genre) item).getTitle(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -64,6 +82,12 @@ public class HomeFragment extends Fragment
         mTrendingTrackAdapter = new TrendingTrackAdapter(getContext());
         trendingMusicRecyclerView.setAdapter(mTrendingTrackAdapter);
         mTrendingTrackAdapter.setOnItemRecyclerViewClickListener(this);
+        RecyclerView genresRecyclerView = view.findViewById(R.id.recyclerViewMusicGenres);
+        genresRecyclerView.setHasFixedSize(true);
+        genresRecyclerView.setNestedScrollingEnabled(false);
+        mGenreAdapter = new GenreAdapter();
+        genresRecyclerView.setAdapter(mGenreAdapter);
+        mGenreAdapter.setOnItemRecyclerViewClickListener(this);
     }
 
     private void initData() {

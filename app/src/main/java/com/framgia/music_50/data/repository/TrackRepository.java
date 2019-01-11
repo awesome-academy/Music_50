@@ -1,5 +1,6 @@
 package com.framgia.music_50.data.repository;
 
+import com.framgia.music_50.data.model.Genre;
 import com.framgia.music_50.data.model.Track;
 import com.framgia.music_50.data.source.TrackDataSource;
 import com.framgia.music_50.data.source.remote.OnFetchDataListener;
@@ -25,5 +26,9 @@ public class TrackRepository {
 
     public void getTrendingTracks(OnFetchDataListener<Track> listener) {
         mRemoteDataSource.getTrendingTracks(listener);
+    }
+
+    public void getMusicGenres(OnFetchDataListener<Genre> listener) {
+        mLocalDataSource.getMusicGenres(listener);
     }
 }

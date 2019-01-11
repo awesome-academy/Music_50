@@ -19,6 +19,7 @@ import static com.framgia.music_50.utils.Constant.USER;
 
 public class GetTracksAsyncTask extends AsyncTask<String, Void, List<Track>> {
     private OnFetchDataListener<Track> mListener;
+    private Exception mException;
 
     GetTracksAsyncTask(OnFetchDataListener<Track> listener) {
         mListener = listener;
@@ -31,15 +32,19 @@ public class GetTracksAsyncTask extends AsyncTask<String, Void, List<Track>> {
             String json = getDataFromUrl(strings[0]);
             tracks = readDataFromJson(json);
         } catch (IOException | JSONException e) {
-            mListener.onError(e);
+            e.printStackTrace();
+            mException = e;
         }
         return tracks;
     }
 
     @Override
-    protected void onPostExecute(List<Track> data) {
-        super.onPostExecute(data);
-        mListener.onSuccess(data);
+    protected void onPostExecute(List<Track> tracks) {
+        super.onPostExecute(tracks);
+        if (mException != null) {
+            mListener.onError(mException);
+        }
+        mListener.onSuccess(tracks);
     }
 
     private String getDataFromUrl(String url) throws IOException {

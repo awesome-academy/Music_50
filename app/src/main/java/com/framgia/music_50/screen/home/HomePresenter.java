@@ -1,5 +1,6 @@
 package com.framgia.music_50.screen.home;
 
+import com.framgia.music_50.data.model.Genre;
 import com.framgia.music_50.data.model.Track;
 import com.framgia.music_50.data.repository.TrackRepository;
 import com.framgia.music_50.data.source.remote.OnFetchDataListener;
@@ -30,8 +31,8 @@ public class HomePresenter implements HomeContract.Presenter {
     public void getTrendingTracks() {
         mTrackRepository.getTrendingTracks(new OnFetchDataListener<Track>() {
             @Override
-            public void onSuccess(List<Track> data) {
-                mView.onGetTrendingTracksSuccess(data);
+            public void onSuccess(List<Track> tracks) {
+                mView.onGetTrendingTracksSuccess(tracks);
             }
 
             @Override
@@ -43,5 +44,16 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void getMusicGenres() {
+        mTrackRepository.getMusicGenres(new OnFetchDataListener<Genre>() {
+            @Override
+            public void onSuccess(List<Genre> genres) {
+                mView.onGetMusicGenreSuccess(genres);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                mView.onGetMusicGenreError(e);
+            }
+        });
     }
 }
