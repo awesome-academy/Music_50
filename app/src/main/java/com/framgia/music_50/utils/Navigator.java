@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import com.framgia.music_50.screen.playlist.PlaylistFragment;
 
 public class Navigator {
     private Activity mActivity;
@@ -22,7 +23,7 @@ public class Navigator {
             Fragment fragment, boolean addToBackStack, String tag) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         Fragment currentFragment = fragmentManager.findFragmentByTag(tag);
-        if (currentFragment == null) {
+        if (currentFragment == null || tag.equals(PlaylistFragment.TAG)) {
             currentFragment = fragment;
             transaction.add(containerViewId, fragment, tag);
         }

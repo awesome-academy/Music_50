@@ -31,4 +31,8 @@ public class TrackRepository {
     public void getMusicGenres(OnFetchDataListener<Genre> listener) {
         mLocalDataSource.getMusicGenres(listener);
     }
+
+    public void getTracksByGenre(String genreType, OnFetchDataListener<Track> listener) {
+        mRemoteDataSource.getTracksByGenre(genreType, listener);
+    }
 }

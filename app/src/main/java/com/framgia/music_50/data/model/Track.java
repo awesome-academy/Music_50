@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Track implements Parcelable {
+    private long mId;
     private String mTitle;
     private String mArtworkUrl;
     private String mArtistName;
@@ -12,7 +13,8 @@ public class Track implements Parcelable {
     private boolean mDownloadable;
     private String mDownloadUrl;
 
-    private Track(TrackBuilder builder){
+    private Track(TrackBuilder builder) {
+        mId = builder.mId;
         mTitle = builder.mTitle;
         mArtworkUrl = builder.mArtworkUrl;
         mArtistName = builder.mArtistName;
@@ -23,6 +25,7 @@ public class Track implements Parcelable {
     }
 
     private Track(Parcel in) {
+        mId = in.readLong();
         mTitle = in.readString();
         mArtworkUrl = in.readString();
         mArtistName = in.readString();
@@ -34,6 +37,7 @@ public class Track implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(mId);
         dest.writeString(mTitle);
         dest.writeString(mArtworkUrl);
         dest.writeString(mArtistName);
@@ -116,7 +120,16 @@ public class Track implements Parcelable {
         mDownloadUrl = downloadUrl;
     }
 
-    public static class TrackBuilder{
+    public long getId() {
+        return mId;
+    }
+
+    public void setId(long id) {
+        mId = id;
+    }
+
+    public static class TrackBuilder {
+        private long mId;
         private String mTitle;
         private String mArtworkUrl;
         private String mArtistName;
@@ -125,7 +138,12 @@ public class Track implements Parcelable {
         private boolean mDownloadable;
         private String mDownloadUrl;
 
-        public TrackBuilder(){
+        public TrackBuilder() {
+        }
+
+        public TrackBuilder setId(long id) {
+            mId = id;
+            return this;
         }
 
         public TrackBuilder setTitle(String title) {
@@ -163,12 +181,13 @@ public class Track implements Parcelable {
             return this;
         }
 
-        public Track build(){
+        public Track build() {
             return new Track(this);
         }
     }
 
-    public final class TrackEntry{
+    public final class TrackEntry {
+        public static final String ID = "id";
         public static final String TRACK = "track";
         public static final String TITLE = "title";
         public static final String ARTWORK_URL = "artwork_url";
