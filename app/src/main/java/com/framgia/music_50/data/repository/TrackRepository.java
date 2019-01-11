@@ -23,7 +23,7 @@ public class TrackRepository {
         return sInstance;
     }
 
-    public void getTrendingTracks(OnFetchDataListener<Track> listener){
+    public void getTrendingTracks(OnFetchDataListener<Track> listener) {
         mRemoteDataSource.getTrendingTracks(listener);
     }
 }
