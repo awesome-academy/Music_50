@@ -5,7 +5,7 @@ import com.framgia.music_50.data.repository.TrackRepository;
 import com.framgia.music_50.data.source.remote.OnFetchDataListener;
 import java.util.List;
 
-public class HomePresenter implements HomeContract.Presenter{
+public class HomePresenter implements HomeContract.Presenter {
     private HomeContract.View mView;
     private TrackRepository mTrackRepository;
 
@@ -31,13 +31,17 @@ public class HomePresenter implements HomeContract.Presenter{
         mTrackRepository.getTrendingTracks(new OnFetchDataListener<Track>() {
             @Override
             public void onSuccess(List<Track> data) {
-
+                mView.onGetTrendingTracksSuccess(data);
             }
 
             @Override
             public void onError(Exception e) {
-
+                mView.onGetTrendingTrackError(e);
             }
         });
+    }
+
+    @Override
+    public void getMusicGenres() {
     }
 }
