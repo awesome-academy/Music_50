@@ -21,13 +21,15 @@ public class Navigator {
     public void goNextChildFragment(FragmentManager fragmentManager, int containerViewId,
             Fragment fragment, boolean addToBackStack, String tag) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if (fragmentManager.findFragmentByTag(tag) == null) {
+        Fragment currentFragment = fragmentManager.findFragmentByTag(tag);
+        if (currentFragment == null) {
+            currentFragment = fragment;
             transaction.add(containerViewId, fragment, tag);
         }
         if (addToBackStack) {
             transaction.addToBackStack(fragment.getClass().getSimpleName());
         }
-        showFragment(fragmentManager, transaction, fragment);
+        showFragment(fragmentManager, transaction, currentFragment);
     }
 
     private void showFragment(FragmentManager fragmentManager, FragmentTransaction transaction,

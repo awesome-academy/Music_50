@@ -6,4 +6,6 @@
     <color name="bottom_navigation_item_unselected">#BDBDBD</color>
     <color name="color_grey_300">#E0E0E0</color>
     <color name="color_grey_900">#212121</color>
+    <color name="color_genre_item_title_bg">#5b847f77</color>
+    <color name="color_genre_title">#e0e0e0</color>
 </resources>
