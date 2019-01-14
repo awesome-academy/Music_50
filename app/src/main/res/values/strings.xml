@@ -9,4 +9,6 @@
     <string name="trending_music_item_ratio">3:2.2</string>
     <string name="image_description">description</string>
     <string name="genre_item_dimension_ratio">1:1</string>
+    <string name="dimension_ratio_1_1">1:1</string>
+    <string name="shuffle_play">Shuffle Play</string>
 </resources>

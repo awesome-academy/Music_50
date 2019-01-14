@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.framgia.music_50.R;
 import com.framgia.music_50.data.model.Track;
+import com.framgia.music_50.utils.Common;
 import com.framgia.music_50.utils.OnItemRecyclerViewClickListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +83,9 @@ public class TrendingTrackAdapter extends RecyclerView.Adapter<TrendingTrackAdap
         }
 
         void bindViewData(Track track) {
-            Glide.with(mContext).load(track.getArtworkUrl()).into(mArtworkImageView);
+            Glide.with(mContext)
+                    .load(Common.getBigImageUrl(track.getArtworkUrl()))
+                    .into(mArtworkImageView);
             mArtistNameTextView.setText(track.getArtistName());
             mTrackTitleTextView.setText(track.getTitle());
         }
