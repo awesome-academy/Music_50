@@ -41,4 +41,11 @@ public class Navigator {
         transaction.show(fragment);
         transaction.commit();
     }
+
+    public void removeFragment(FragmentManager fragmentManager, String tag) {
+        Fragment fragment = fragmentManager.findFragmentByTag(tag);
+        if (fragment != null) {
+            fragmentManager.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
 }

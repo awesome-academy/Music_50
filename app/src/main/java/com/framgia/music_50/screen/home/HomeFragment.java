@@ -74,7 +74,7 @@ public class HomeFragment extends Fragment
         if (item instanceof Track) {
             Toast.makeText(getContext(), ((Track) item).getTitle(), Toast.LENGTH_SHORT).show();
         } else if (item instanceof Genre) {
-            mNavigator.goNextChildFragment(getFragmentManager(), R.id.layoutContainer,
+            mNavigator.goNextChildFragment(getFragmentManager(), R.id.layoutMainActivity,
                     PlaylistFragment.newInstance((Genre) item), true, PlaylistFragment.TAG);
         }
     }
