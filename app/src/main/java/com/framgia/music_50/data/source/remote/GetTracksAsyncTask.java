@@ -70,17 +70,16 @@ public class GetTracksAsyncTask extends AsyncTask<String, Void, List<Track>> {
         JSONArray jsonArray = rootObject.getJSONArray(COLLECTION);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject object = jsonArray.getJSONObject(i).getJSONObject(Track.TrackEntry.TRACK);
-            Track track =
-                    new Track.TrackBuilder().setTitle(object.getString(Track.TrackEntry.TITLE))
-                            .setArtworkUrl(object.getString(Track.TrackEntry.ARTWORK_URL))
-                            .setArtistName(object.getJSONObject(USER)
-                                    .getString(Track.TrackEntry.ARTIST_NAME))
-                            .setAvatarUrl(object.getJSONObject(USER)
-                                    .getString(Track.TrackEntry.AVATAR_URL))
-                            .setDownloadable(object.getBoolean(Track.TrackEntry.DOWNLOADABLE))
-                            .setDownloadUrl(object.getString(Track.TrackEntry.DOWNLOAD_URL))
-                            .setDuration(object.getInt(Track.TrackEntry.DURATION))
-                            .build();
+            Track track = new Track.TrackBuilder().setId(object.getLong(Track.TrackEntry.ID))
+                    .setTitle(object.getString(Track.TrackEntry.TITLE))
+                    .setArtworkUrl(object.getString(Track.TrackEntry.ARTWORK_URL))
+                    .setArtistName(
+                            object.getJSONObject(USER).getString(Track.TrackEntry.ARTIST_NAME))
+                    .setAvatarUrl(object.getJSONObject(USER).getString(Track.TrackEntry.AVATAR_URL))
+                    .setDownloadable(object.getBoolean(Track.TrackEntry.DOWNLOADABLE))
+                    .setDownloadUrl(object.getString(Track.TrackEntry.DOWNLOAD_URL))
+                    .setDuration(object.getInt(Track.TrackEntry.DURATION))
+                    .build();
             tracks.add(track);
         }
         return tracks;

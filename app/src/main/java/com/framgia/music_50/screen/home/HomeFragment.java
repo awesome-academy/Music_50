@@ -16,6 +16,8 @@ import com.framgia.music_50.data.source.local.TrackLocalDataSource;
 import com.framgia.music_50.data.source.remote.TrackRemoteDataSource;
 import com.framgia.music_50.screen.home.adapter.GenreAdapter;
 import com.framgia.music_50.screen.home.adapter.TrendingTrackAdapter;
+import com.framgia.music_50.screen.playlist.PlaylistFragment;
+import com.framgia.music_50.utils.Navigator;
 import com.framgia.music_50.utils.OnItemRecyclerViewClickListener;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class HomeFragment extends Fragment
     public static final String TAG = HomeFragment.class.getSimpleName();
     private TrendingTrackAdapter mTrendingTrackAdapter;
     private GenreAdapter mGenreAdapter;
+    private Navigator mNavigator;
 
     public static HomeFragment newInstance() {
         HomeFragment homeFragment = new HomeFragment();
@@ -71,7 +74,8 @@ public class HomeFragment extends Fragment
         if (item instanceof Track) {
             Toast.makeText(getContext(), ((Track) item).getTitle(), Toast.LENGTH_SHORT).show();
         } else if (item instanceof Genre) {
-            Toast.makeText(getContext(), ((Genre) item).getTitle(), Toast.LENGTH_SHORT).show();
+            mNavigator.goNextChildFragment(getFragmentManager(), R.id.layoutContainer,
+                    PlaylistFragment.newInstance((Genre) item), true, PlaylistFragment.TAG);
         }
     }
 
@@ -91,6 +95,7 @@ public class HomeFragment extends Fragment
     }
 
     private void initData() {
+        mNavigator = new Navigator(this);
         TrackRemoteDataSource trackRemoteDataSource = TrackRemoteDataSource.getInstance();
         TrackLocalDataSource trackLocalDataSource = TrackLocalDataSource.getInstance();
         TrackRepository repository =

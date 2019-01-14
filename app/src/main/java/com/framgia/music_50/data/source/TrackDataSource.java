@@ -11,5 +11,7 @@ public interface TrackDataSource {
 
     interface RemoteDataSource {
         void getTrendingTracks(OnFetchDataListener<Track> listener);
+
+        void getTracksByGenre(String genreType, OnFetchDataListener<Track> listener);
     }
 }

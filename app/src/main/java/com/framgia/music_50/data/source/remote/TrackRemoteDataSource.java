@@ -18,4 +18,10 @@ public class TrackRemoteDataSource implements TrackDataSource.RemoteDataSource {
     public void getTrendingTracks(OnFetchDataListener<Track> listener) {
         new GetTracksAsyncTask(listener).execute(Constant.TRENDING_MUSIC_URL);
     }
+
+    @Override
+    public void getTracksByGenre(String genreType, OnFetchDataListener<Track> listener) {
+        new GetTracksAsyncTask(listener).execute(
+                Constant.TRENDING_MUSIC_URL + Constant.GENRE + genreType);
+    }
 }

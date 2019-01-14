@@ -20,11 +20,12 @@ public class TrackLocalDataSource implements TrackDataSource.LocalDataSource {
 
     @Override
     public void getMusicGenres(OnFetchDataListener<Genre> listener) {
-        List<Genre> genreList = new ArrayList<>();
-        genreList.add(new Genre(Genres.ALTERNATIVE_ROCK_TITLE, R.drawable.alternative_rock_genre));
-        genreList.add(new Genre(Genres.AMBIENT_TITLE, R.drawable.ambient_genre));
-        genreList.add(new Genre(Genres.CLASSICAL_TITLE, R.drawable.classical_genre));
-        genreList.add(new Genre(Genres.COUNTRY_TITLE, R.drawable.country_genre));
-        listener.onSuccess(genreList);
+        List<Genre> genres = new ArrayList<>();
+        genres.add(new Genre(Genres.ALTERNATIVE_ROCK_TITLE, R.drawable.alternative_rock_genre,
+                Genres.ALTERNATIVE_ROCK));
+        genres.add(new Genre(Genres.AMBIENT_TITLE, R.drawable.ambient_genre, Genres.AMBIENT));
+        genres.add(new Genre(Genres.CLASSICAL_TITLE, R.drawable.classical_genre, Genres.CLASSICAL));
+        genres.add(new Genre(Genres.COUNTRY_TITLE, R.drawable.country_genre, Genres.COUNTRY));
+        listener.onSuccess(genres);
     }
 }
