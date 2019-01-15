@@ -11,4 +11,8 @@
     <string name="genre_item_dimension_ratio">1:1</string>
     <string name="dimension_ratio_1_1">1:1</string>
     <string name="shuffle_play">Shuffle Play</string>
+    <string name="loop_one">1</string>
+    <string name="default_duration">00:00</string>
+    <string name="view_scale_value">0.8</string>
+    <string name="view_scale_default_value">1</string>
 </resources>
