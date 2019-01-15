@@ -1,5 +1,6 @@
 package com.framgia.music_50.screen.playlist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -21,7 +22,9 @@ import com.framgia.music_50.data.repository.TrackRepository;
 import com.framgia.music_50.data.source.local.TrackLocalDataSource;
 import com.framgia.music_50.data.source.remote.TrackRemoteDataSource;
 import com.framgia.music_50.screen.BaseFragment;
+import com.framgia.music_50.screen.play.PlayActivity;
 import com.framgia.music_50.screen.playlist.adapter.PlaylistAdapter;
+import com.framgia.music_50.service.TrackService;
 import com.framgia.music_50.utils.Navigator;
 import com.framgia.music_50.utils.OnItemRecyclerViewClickListener;
 import java.util.List;
@@ -38,6 +41,7 @@ public class PlaylistFragment extends BaseFragment
     private AppBarLayout mPlaylistAppBar;
     private PlaylistAdapter mPlaylistAdapter;
     private Navigator mNavigator;
+    private List<Track> mTracks;
 
     public static PlaylistFragment newInstance(Genre genre) {
         PlaylistFragment playlistFragment = new PlaylistFragment();
@@ -110,6 +114,7 @@ public class PlaylistFragment extends BaseFragment
     @Override
     public void onGetTracksByGenreSuccess(List<Track> tracks) {
         if (tracks != null) {
+            mTracks = tracks;
             mPlaylistAdapter.updateData(tracks);
         }
     }
@@ -120,7 +125,13 @@ public class PlaylistFragment extends BaseFragment
     }
 
     @Override
-    public void onItemClickListener(Track item) {
+    public void onItemClickListener(Track track) {
+        startActivity(PlayActivity.getIntent(getContext(), track));
+        if (getActivity() != null) {
+            Intent intent =
+                    TrackService.getServiceIntent(getContext(), mTracks, mTracks.indexOf(track));
+            getActivity().startService(intent);
+        }
     }
 
     @Override

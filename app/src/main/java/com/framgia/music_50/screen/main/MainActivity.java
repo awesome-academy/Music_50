@@ -1,6 +1,9 @@
 package com.framgia.music_50.screen.main;
 
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -13,6 +16,7 @@ import com.framgia.music_50.screen.audio.AudioFragment;
 import com.framgia.music_50.screen.home.HomeFragment;
 import com.framgia.music_50.screen.library.LibraryFragment;
 import com.framgia.music_50.screen.search.SearchFragment;
+import com.framgia.music_50.service.TrackService;
 import com.framgia.music_50.utils.Navigator;
 import java.util.List;
 
@@ -21,6 +25,21 @@ public class MainActivity extends BaseActivity
         BottomNavigationView.OnNavigationItemSelectedListener {
     private BottomNavigationView mBottomNavigationView;
     private Navigator mNavigator;
+    private boolean mIsBound;
+    private TrackService mTrackService;
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            TrackService.TrackBinder trackBinder = (TrackService.TrackBinder) binder;
+            mTrackService = trackBinder.getService();
+            mIsBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mIsBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,6 +48,15 @@ public class MainActivity extends BaseActivity
         initView();
         initData();
         initListener();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mIsBound) {
+            unbindService(mServiceConnection);
+            mIsBound = false;
+        }
     }
 
     @Override
