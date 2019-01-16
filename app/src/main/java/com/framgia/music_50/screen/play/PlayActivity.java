@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.framgia.music_50.R;
@@ -16,8 +19,11 @@ import com.framgia.music_50.service.ServiceContract;
 import com.framgia.music_50.service.TrackService;
 import com.framgia.music_50.utils.Common;
 
-public class PlayActivity extends BaseActivity implements ServiceContract.OnMediaPlayerChange {
+public class PlayActivity extends BaseActivity
+        implements ServiceContract.OnMediaPlayerChange, View.OnClickListener,
+        SeekBar.OnSeekBarChangeListener {
     private final static String EXTRA_TRACK = "EXTRA_TRACK";
+    private final int TIME_UPDATE_SEEK_BAR = 100;
     private ImageView mBackImageView;
     private ImageView mDownloadImageView;
     private ImageView mArtworkImageView;
@@ -28,17 +34,19 @@ public class PlayActivity extends BaseActivity implements ServiceContract.OnMedi
     private ImageView mLoopImageView;
     private TextView mTrackTitleTextView;
     private TextView mArtistNameTextView;
-    private TextView mCurrentDurationText;
-    private TextView mTotalDurationText;
+    private TextView mCurrentDurationTextView;
+    private TextView mTotalDurationTextView;
+    private SeekBar mSeekBar;
     private boolean mIsBound;
     private TrackService mTrackService;
+    private Handler mHandler;
+    private Runnable mRunnable;
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
             TrackService.TrackBinder trackBinder = (TrackService.TrackBinder) binder;
             mTrackService = trackBinder.getService();
             mTrackService.setOnMediaChangeListener(PlayActivity.this);
-            mTrackService.play();
             mIsBound = true;
         }
 
@@ -91,12 +99,14 @@ public class PlayActivity extends BaseActivity implements ServiceContract.OnMedi
         mLoopImageView = findViewById(R.id.imageViewLoop);
         mTrackTitleTextView = findViewById(R.id.textViewTrackTitle);
         mArtistNameTextView = findViewById(R.id.textViewArtistName);
-        mCurrentDurationText = findViewById(R.id.textViewCurrentDuration);
-        mTotalDurationText = findViewById(R.id.textViewTotalDuration);
+        mCurrentDurationTextView = findViewById(R.id.textViewCurrentDuration);
+        mTotalDurationTextView = findViewById(R.id.textViewTotalDuration);
+        mSeekBar = findViewById(R.id.seekBarTrack);
     }
 
     @Override
     public void initData() {
+        mHandler = new Handler();
         Track track = getIntent().getParcelableExtra(EXTRA_TRACK);
         if (track != null) {
             updateUI(track);
@@ -105,12 +115,78 @@ public class PlayActivity extends BaseActivity implements ServiceContract.OnMedi
 
     @Override
     public void initListener() {
+        mBackImageView.setOnClickListener(this);
+        mPlayPauseImageView.setOnClickListener(this);
+        mSeekBar.setOnSeekBarChangeListener(this);
     }
 
     private void updateUI(Track track) {
         mTrackTitleTextView.setText(track.getTitle());
         mArtistNameTextView.setText(track.getArtistName());
         Glide.with(this).load(Common.getBigImageUrl(track.getArtworkUrl())).into(mArtworkImageView);
-        mTotalDurationText.setText(Common.convertTime(track.getDuration()));
+        mTotalDurationTextView.setText(Common.convertTime(track.getDuration()));
+        mSeekBar.setMax(track.getDuration());
     }
+
+    @Override
+    public void onTrackChange(Track track) {
+        if (track != null) {
+            updateUI(track);
+        }
+    }
+
+    @Override
+    public void onMediaPlayerStart() {
+        updateSeekBar();
+    }
+
+    @Override
+    public void onMediaPlayerStateChange(boolean isPlaying) {
+        if (isPlaying) {
+            mPlayPauseImageView.setImageDrawable(getDrawable(R.drawable.ic_rounded_pause));
+        } else {
+            mPlayPauseImageView.setImageDrawable(getDrawable(R.drawable.ic_rounded_play));
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.imageViewBack:
+                finish();
+                break;
+            case R.id.imageViewPlayPause:
+                mTrackService.playPauseTrack();
+                break;
+        }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        mHandler.removeCallbacks(mRunnable);
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        mTrackService.seekTo(seekBar.getProgress());
+        mHandler.postDelayed(mRunnable, TIME_UPDATE_SEEK_BAR);
+    }
+
+    private void updateSeekBar() {
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mCurrentDurationTextView.setText(
+                        Common.convertTime(mTrackService.getCurrentDuration()));
+                mSeekBar.setProgress(mTrackService.getCurrentDuration());
+                mHandler.postDelayed(mRunnable, TIME_UPDATE_SEEK_BAR);
+            }
+        };
+        mRunnable.run();
+    }
+
 }
