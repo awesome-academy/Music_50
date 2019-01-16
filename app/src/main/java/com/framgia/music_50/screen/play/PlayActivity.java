@@ -18,6 +18,7 @@ import com.framgia.music_50.screen.BaseActivity;
 import com.framgia.music_50.service.ServiceContract;
 import com.framgia.music_50.service.TrackService;
 import com.framgia.music_50.utils.Common;
+import com.framgia.music_50.utils.LoopType;
 
 public class PlayActivity extends BaseActivity
         implements ServiceContract.OnMediaPlayerChange, View.OnClickListener,
@@ -36,6 +37,7 @@ public class PlayActivity extends BaseActivity
     private TextView mArtistNameTextView;
     private TextView mCurrentDurationTextView;
     private TextView mTotalDurationTextView;
+    private TextView mLoopOneTextView;
     private SeekBar mSeekBar;
     private boolean mIsBound;
     private TrackService mTrackService;
@@ -102,6 +104,7 @@ public class PlayActivity extends BaseActivity
         mCurrentDurationTextView = findViewById(R.id.textViewCurrentDuration);
         mTotalDurationTextView = findViewById(R.id.textViewTotalDuration);
         mSeekBar = findViewById(R.id.seekBarTrack);
+        mLoopOneTextView = findViewById(R.id.textViewLoopOne);
     }
 
     @Override
@@ -118,12 +121,19 @@ public class PlayActivity extends BaseActivity
         mBackImageView.setOnClickListener(this);
         mPlayPauseImageView.setOnClickListener(this);
         mSeekBar.setOnSeekBarChangeListener(this);
+        mSkipPreviousImageView.setOnClickListener(this);
+        mSkipNextImageView.setOnClickListener(this);
+        mLoopImageView.setOnClickListener(this);
+        mSkipPreviousImageView.setOnClickListener(this);
+        mSkipNextImageView.setOnClickListener(this);
     }
 
     private void updateUI(Track track) {
         mTrackTitleTextView.setText(track.getTitle());
         mArtistNameTextView.setText(track.getArtistName());
-        Glide.with(this).load(Common.getBigImageUrl(track.getArtworkUrl())).into(mArtworkImageView);
+        Glide.with(getApplicationContext())
+                .load(Common.getBigImageUrl(track.getArtworkUrl()))
+                .into(mArtworkImageView);
         mTotalDurationTextView.setText(Common.convertTime(track.getDuration()));
         mSeekBar.setMax(track.getDuration());
     }
@@ -150,6 +160,24 @@ public class PlayActivity extends BaseActivity
     }
 
     @Override
+    public void setLoopType(int loopType) {
+        switch (loopType) {
+            case LoopType.LOOP_ALL:
+                mLoopImageView.setImageDrawable(getDrawable(R.drawable.ic_loop));
+                mLoopOneTextView.setVisibility(View.INVISIBLE);
+                break;
+            case LoopType.LOOP_ONE:
+                mLoopImageView.setImageDrawable(getDrawable(R.drawable.ic_loop));
+                mLoopOneTextView.setVisibility(View.VISIBLE);
+                break;
+            case LoopType.NO_LOOP:
+                mLoopImageView.setImageDrawable(getDrawable(R.drawable.ic_no_loop));
+                mLoopOneTextView.setVisibility(View.INVISIBLE);
+                break;
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imageViewBack:
@@ -157,6 +185,17 @@ public class PlayActivity extends BaseActivity
                 break;
             case R.id.imageViewPlayPause:
                 mTrackService.playPauseTrack();
+                break;
+            case R.id.imageViewSkipPrevious:
+                onMediaPlayerStateChange(false);
+                mTrackService.skipPrevious();
+                break;
+            case R.id.imageViewSkipNext:
+                onMediaPlayerStateChange(false);
+                mTrackService.skipNext();
+                break;
+            case R.id.imageViewLoop:
+                mTrackService.changeLoopType();
                 break;
         }
     }
@@ -188,5 +227,4 @@ public class PlayActivity extends BaseActivity
         };
         mRunnable.run();
     }
-
 }

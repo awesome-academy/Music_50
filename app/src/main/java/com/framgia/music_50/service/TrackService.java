@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.os.Parcelable;
 import com.framgia.music_50.data.model.Track;
 import com.framgia.music_50.utils.Constant;
+import com.framgia.music_50.utils.LoopType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,14 @@ public class TrackService extends Service
     private final static String EXTRA_TRACK_LIST = "EXTRA_TRACK_LIST";
     private final static String EXTRA_TRACK_POSITION = "EXTRA_TRACK_POSITION";
     private final int DEFAULT_POSITION = 0;
+    private final int DEFAULT_VALUE_ONE = 1;
     private List<Track> mTracks;
     private int mPosition;
     private MediaPlayer mMediaPlayer;
     private ServiceContract.OnMediaPlayerChange mOnMediaPlayerChange;
     private ServiceContract.OnMiniControllerChange mOnMiniControllerChange;
     private TrackBinder mTrackBinder;
+    private int mLoopType;
 
     public static Intent getServiceIntent(Context context, List<Track> tracks, int position) {
         Intent intent = new Intent(context, TrackService.class);
@@ -46,6 +49,7 @@ public class TrackService extends Service
             mTracks = intent.getParcelableArrayListExtra(EXTRA_TRACK_LIST);
             mPosition = intent.getIntExtra(EXTRA_TRACK_POSITION, DEFAULT_POSITION);
             if (mTracks != null) {
+                mLoopType = LoopType.LOOP_ALL;
                 play();
             }
         }
@@ -101,6 +105,19 @@ public class TrackService extends Service
         if (mOnMediaPlayerChange != null) {
             mOnMediaPlayerChange.onMediaPlayerStateChange(false);
         }
+        switch (mLoopType) {
+            case LoopType.LOOP_ALL:
+                skipNext();
+                break;
+            case LoopType.LOOP_ONE:
+                play();
+                break;
+            case LoopType.NO_LOOP:
+                if (mPosition != mTracks.size() - DEFAULT_VALUE_ONE) {
+                    skipNext();
+                }
+                break;
+        }
     }
 
     public int getCurrentDuration() {
@@ -124,6 +141,39 @@ public class TrackService extends Service
     public void seekTo(int duration) {
         if (mMediaPlayer != null) {
             mMediaPlayer.seekTo(duration);
+        }
+    }
+
+    public void skipPrevious() {
+        mPosition--;
+        if (mPosition < DEFAULT_POSITION) {
+            mPosition = mTracks.size() - DEFAULT_VALUE_ONE;
+        }
+        play();
+    }
+
+    public void skipNext() {
+        mPosition++;
+        if (mPosition == mTracks.size()) {
+            mPosition = DEFAULT_POSITION;
+        }
+        play();
+    }
+
+    public void changeLoopType() {
+        switch (mLoopType) {
+            case LoopType.LOOP_ALL:
+                mLoopType = LoopType.LOOP_ONE;
+                break;
+            case LoopType.LOOP_ONE:
+                mLoopType = LoopType.NO_LOOP;
+                break;
+            case LoopType.NO_LOOP:
+                mLoopType = LoopType.LOOP_ALL;
+                break;
+        }
+        if (mOnMediaPlayerChange != null) {
+            mOnMediaPlayerChange.setLoopType(mLoopType);
         }
     }
 
