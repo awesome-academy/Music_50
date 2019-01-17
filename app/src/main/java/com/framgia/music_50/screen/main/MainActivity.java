@@ -7,14 +7,18 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.view.MenuItem;
+import android.view.View;
 import com.framgia.music_50.R;
 import com.framgia.music_50.data.model.Track;
 import com.framgia.music_50.data.source.remote.OnFetchDataListener;
 import com.framgia.music_50.screen.BaseActivity;
 import com.framgia.music_50.screen.audio.AudioFragment;
 import com.framgia.music_50.screen.home.HomeFragment;
+import com.framgia.music_50.screen.home.adapter.OnAttachedPlaylistFragment;
 import com.framgia.music_50.screen.library.LibraryFragment;
+import com.framgia.music_50.screen.playlist.PlaylistFragment;
 import com.framgia.music_50.screen.search.SearchFragment;
 import com.framgia.music_50.service.TrackService;
 import com.framgia.music_50.utils.Navigator;
@@ -22,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity
         implements MainContract.View, OnFetchDataListener<Track>,
-        BottomNavigationView.OnNavigationItemSelectedListener {
+        BottomNavigationView.OnNavigationItemSelectedListener, OnAttachedPlaylistFragment {
     private BottomNavigationView mBottomNavigationView;
     private Navigator mNavigator;
     private boolean mIsBound;
@@ -48,6 +52,15 @@ public class MainActivity extends BaseActivity
         initView();
         initData();
         initListener();
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment instanceof PlaylistFragment) {
+            PlaylistFragment playlistFragment = (PlaylistFragment) fragment;
+            playlistFragment.setOnAttachedPlaylistFragment(this);
+        }
     }
 
     @Override
@@ -105,5 +118,14 @@ public class MainActivity extends BaseActivity
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public void setBottomNavigationVisibility(boolean isVisible) {
+        if (isVisible) {
+            mBottomNavigationView.setVisibility(View.VISIBLE);
+        } else {
+            mBottomNavigationView.setVisibility(View.GONE);
+        }
     }
 }

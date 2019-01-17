@@ -1,12 +1,18 @@
 package com.framgia.music_50.screen.play;
 
+import android.Manifest;
+import android.app.DownloadManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -18,6 +24,7 @@ import com.framgia.music_50.screen.BaseActivity;
 import com.framgia.music_50.service.ServiceContract;
 import com.framgia.music_50.service.TrackService;
 import com.framgia.music_50.utils.Common;
+import com.framgia.music_50.utils.Constant;
 import com.framgia.music_50.utils.LoopType;
 
 public class PlayActivity extends BaseActivity
@@ -90,6 +97,12 @@ public class PlayActivity extends BaseActivity
     }
 
     @Override
+    protected void onDestroy() {
+        mTrackService.setOnMediaChangeListener(null);
+        super.onDestroy();
+    }
+
+    @Override
     public void initView() {
         mBackImageView = findViewById(R.id.imageViewBack);
         mDownloadImageView = findViewById(R.id.imageViewDownloadTrack);
@@ -126,6 +139,8 @@ public class PlayActivity extends BaseActivity
         mLoopImageView.setOnClickListener(this);
         mSkipPreviousImageView.setOnClickListener(this);
         mSkipNextImageView.setOnClickListener(this);
+        mShuffleImageView.setOnClickListener(this);
+        mDownloadImageView.setOnClickListener(this);
     }
 
     private void updateUI(Track track) {
@@ -136,6 +151,11 @@ public class PlayActivity extends BaseActivity
                 .into(mArtworkImageView);
         mTotalDurationTextView.setText(Common.convertTime(track.getDuration()));
         mSeekBar.setMax(track.getDuration());
+        if (track.isDownloadable()) {
+            mDownloadImageView.setVisibility(View.VISIBLE);
+        } else {
+            mDownloadImageView.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -178,6 +198,15 @@ public class PlayActivity extends BaseActivity
     }
 
     @Override
+    public void onShuffleStateChange(boolean isShuffle) {
+        if (isShuffle) {
+            mShuffleImageView.setImageDrawable(getDrawable(R.drawable.ic_shuffle));
+        } else {
+            mShuffleImageView.setImageDrawable(getDrawable(R.drawable.ic_shuffle_disable));
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imageViewBack:
@@ -197,6 +226,8 @@ public class PlayActivity extends BaseActivity
             case R.id.imageViewLoop:
                 mTrackService.changeLoopType();
                 break;
+            case R.id.imageViewShuffle:
+                mTrackService.shuffleTracks();
         }
     }
 

@@ -15,4 +15,5 @@
     <string name="default_duration">00:00</string>
     <string name="view_scale_value">0.8</string>
     <string name="view_scale_default_value">1</string>
+    <string name="question_symbol">\?</string>
 </resources>
