@@ -32,6 +32,7 @@ public class PlayActivity extends BaseActivity
         SeekBar.OnSeekBarChangeListener {
     private final static String EXTRA_TRACK = "EXTRA_TRACK";
     private final int TIME_UPDATE_SEEK_BAR = 100;
+    private final int DOWNLOAD_REQUEST_CODE = 2019;
     private ImageView mBackImageView;
     private ImageView mDownloadImageView;
     private ImageView mArtworkImageView;
@@ -100,6 +101,16 @@ public class PlayActivity extends BaseActivity
     protected void onDestroy() {
         mTrackService.setOnMediaChangeListener(null);
         super.onDestroy();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == DOWNLOAD_REQUEST_CODE
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            downloadTrack();
+        }
     }
 
     @Override
@@ -228,6 +239,20 @@ public class PlayActivity extends BaseActivity
                 break;
             case R.id.imageViewShuffle:
                 mTrackService.shuffleTracks();
+            case R.id.imageViewDownloadTrack:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(
+                                new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                                DOWNLOAD_REQUEST_CODE);
+                    } else {
+                        downloadTrack();
+                    }
+                } else {
+                    downloadTrack();
+                }
+                break;
         }
     }
 
@@ -257,5 +282,19 @@ public class PlayActivity extends BaseActivity
             }
         };
         mRunnable.run();
+    }
+
+    private void downloadTrack() {
+        Track track = mTrackService.getCurrentTrack();
+        if (track == null) {
+            return;
+        }
+        DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        Uri uri = Uri.parse(
+                track.getDownloadUrl() + getString(R.string.question_symbol) + Constant.CLIENT_ID);
+        manager.enqueue(new DownloadManager.Request(uri).setAllowedNetworkTypes(
+                DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false)
+                .setDescription(track.getTitle()));
     }
 }

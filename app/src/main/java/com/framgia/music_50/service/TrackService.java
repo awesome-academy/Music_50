@@ -204,6 +204,10 @@ public class TrackService extends Service
         }
     }
 
+    public Track getCurrentTrack() {
+        return mTracks.get(mPosition);
+    }
+
     public class TrackBinder extends Binder {
         public TrackService getService() {
             return TrackService.this;
