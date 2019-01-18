@@ -11,6 +11,8 @@ public interface ServiceContract {
         void onMediaPlayerStateChange(boolean isPlaying);
 
         void setLoopType(int loopType);
+
+        void onShuffleStateChange(boolean isShuffle);
     }
 
     interface OnMiniControllerChange {

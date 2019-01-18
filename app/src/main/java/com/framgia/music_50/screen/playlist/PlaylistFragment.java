@@ -22,6 +22,7 @@ import com.framgia.music_50.data.repository.TrackRepository;
 import com.framgia.music_50.data.source.local.TrackLocalDataSource;
 import com.framgia.music_50.data.source.remote.TrackRemoteDataSource;
 import com.framgia.music_50.screen.BaseFragment;
+import com.framgia.music_50.screen.home.adapter.OnAttachedPlaylistFragment;
 import com.framgia.music_50.screen.play.PlayActivity;
 import com.framgia.music_50.screen.playlist.adapter.PlaylistAdapter;
 import com.framgia.music_50.service.TrackService;
@@ -42,6 +43,7 @@ public class PlaylistFragment extends BaseFragment
     private PlaylistAdapter mPlaylistAdapter;
     private Navigator mNavigator;
     private List<Track> mTracks;
+    private OnAttachedPlaylistFragment mOnAttachedPlaylistFragment;
 
     public static PlaylistFragment newInstance(Genre genre) {
         PlaylistFragment playlistFragment = new PlaylistFragment();
@@ -65,6 +67,22 @@ public class PlaylistFragment extends BaseFragment
         initData();
         initListener();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mOnAttachedPlaylistFragment != null) {
+            mOnAttachedPlaylistFragment.setBottomNavigationVisibility(false);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mOnAttachedPlaylistFragment != null) {
+            mOnAttachedPlaylistFragment.setBottomNavigationVisibility(true);
+        }
     }
 
     @Override
@@ -149,5 +167,9 @@ public class PlaylistFragment extends BaseFragment
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void setOnAttachedPlaylistFragment(OnAttachedPlaylistFragment onAttach) {
+        mOnAttachedPlaylistFragment = onAttach;
     }
 }

@@ -98,7 +98,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageViewSkipPrevious"
-        app:srcCompat="@drawable/ic_shuffle"
+        app:srcCompat="@drawable/ic_shuffle_disable"
         />
     <SeekBar
         android:id="@+id/seekBarTrack"

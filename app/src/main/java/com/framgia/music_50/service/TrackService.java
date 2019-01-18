@@ -13,6 +13,7 @@ import com.framgia.music_50.utils.Constant;
 import com.framgia.music_50.utils.LoopType;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TrackService extends Service
@@ -22,12 +23,15 @@ public class TrackService extends Service
     private final int DEFAULT_POSITION = 0;
     private final int DEFAULT_VALUE_ONE = 1;
     private List<Track> mTracks;
+    private List<Track> mShuffleTracks;
+    private List<Track> mTemporaryTracks;
     private int mPosition;
     private MediaPlayer mMediaPlayer;
     private ServiceContract.OnMediaPlayerChange mOnMediaPlayerChange;
     private ServiceContract.OnMiniControllerChange mOnMiniControllerChange;
     private TrackBinder mTrackBinder;
     private int mLoopType;
+    private boolean mIsShuffle;
 
     public static Intent getServiceIntent(Context context, List<Track> tracks, int position) {
         Intent intent = new Intent(context, TrackService.class);
@@ -50,6 +54,10 @@ public class TrackService extends Service
             mPosition = intent.getIntExtra(EXTRA_TRACK_POSITION, DEFAULT_POSITION);
             if (mTracks != null) {
                 mLoopType = LoopType.LOOP_ALL;
+                mIsShuffle = false;
+                mShuffleTracks = new ArrayList<>(mTracks);
+                mTemporaryTracks = new ArrayList<>(mTracks);
+                Collections.shuffle(mShuffleTracks);
                 play();
             }
         }
@@ -121,7 +129,7 @@ public class TrackService extends Service
     }
 
     public int getCurrentDuration() {
-        return mMediaPlayer.getCurrentPosition();
+        return mMediaPlayer != null ? mMediaPlayer.getCurrentPosition() : DEFAULT_POSITION;
     }
 
     public void playPauseTrack() {
@@ -174,6 +182,25 @@ public class TrackService extends Service
         }
         if (mOnMediaPlayerChange != null) {
             mOnMediaPlayerChange.setLoopType(mLoopType);
+        }
+    }
+
+    public void shuffleTracks() {
+        mIsShuffle = !mIsShuffle;
+        int newPosition;
+        if (mIsShuffle) {
+            newPosition = mShuffleTracks.indexOf(mTracks.get(mPosition));
+            mTracks.clear();
+            mTracks.addAll(mShuffleTracks);
+            mPosition = newPosition;
+        } else {
+            newPosition = mTemporaryTracks.indexOf(mShuffleTracks.get(mPosition));
+            mTracks.clear();
+            mTracks.addAll(mTemporaryTracks);
+            mPosition = newPosition;
+        }
+        if (mOnMediaPlayerChange != null) {
+            mOnMediaPlayerChange.onShuffleStateChange(mIsShuffle);
         }
     }
 
