@@ -11,4 +11,6 @@
     <color name="color_grey_200">#eeeeee</color>
     <color name="color_grey_400_60">#3cbdbdbd</color>
     <color name="amber_500">#ffc107</color>
+    <color name="color_grey_50">#fafafa</color>
+    <color name="color_line">#2E2E2E</color>
 </resources>

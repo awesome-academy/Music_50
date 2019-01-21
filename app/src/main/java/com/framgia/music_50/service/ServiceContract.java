@@ -16,5 +16,8 @@ public interface ServiceContract {
     }
 
     interface OnMiniControllerChange {
+        void onTrackChange(Track track);
+
+        void onMediaPlayerStateChange(boolean isPlaying);
     }
 }
