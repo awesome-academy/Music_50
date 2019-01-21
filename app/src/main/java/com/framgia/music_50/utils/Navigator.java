@@ -29,9 +29,10 @@ public class Navigator {
         }
         if (addToBackStack) {
             transaction.addToBackStack(rootTag);
+        } else {
+            showFragment(fragmentManager, currentFragment);
         }
         transaction.commit();
-        showFragment(fragmentManager, currentFragment);
     }
 
     private void showFragment(FragmentManager fragmentManager, Fragment fragment) {
