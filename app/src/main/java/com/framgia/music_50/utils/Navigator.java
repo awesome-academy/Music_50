@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import com.framgia.music_50.screen.playlist.PlaylistFragment;
 
 public class Navigator {
     private Activity mActivity;
@@ -20,21 +19,23 @@ public class Navigator {
     }
 
     public void goNextChildFragment(FragmentManager fragmentManager, int containerViewId,
-            Fragment fragment, boolean addToBackStack, String tag) {
+            Fragment fragment, boolean addToBackStack, String rootTag) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        Fragment currentFragment = fragmentManager.findFragmentByTag(tag);
-        if (currentFragment == null || tag.equals(PlaylistFragment.TAG)) {
+        Fragment currentFragment =
+                fragmentManager.findFragmentByTag(fragment.getClass().getSimpleName());
+        if (currentFragment == null) {
             currentFragment = fragment;
-            transaction.add(containerViewId, fragment, tag);
+            transaction.add(containerViewId, fragment, fragment.getClass().getSimpleName());
         }
         if (addToBackStack) {
-            transaction.addToBackStack(fragment.getClass().getSimpleName());
+            transaction.addToBackStack(rootTag);
         }
-        showFragment(fragmentManager, transaction, currentFragment);
+        transaction.commit();
+        showFragment(fragmentManager, currentFragment);
     }
 
-    private void showFragment(FragmentManager fragmentManager, FragmentTransaction transaction,
-            Fragment fragment) {
+    private void showFragment(FragmentManager fragmentManager, Fragment fragment) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         for (int i = 0; i < fragmentManager.getFragments().size(); i++) {
             transaction.hide(fragmentManager.getFragments().get(i));
         }
@@ -42,10 +43,9 @@ public class Navigator {
         transaction.commit();
     }
 
-    public void removeFragment(FragmentManager fragmentManager, String tag) {
-        Fragment fragment = fragmentManager.findFragmentByTag(tag);
-        if (fragment != null) {
-            fragmentManager.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
+    public void removeFragment(FragmentManager fragmentManager, String rootTag) {
+        fragmentManager.popBackStack(rootTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        Fragment fragment = fragmentManager.findFragmentByTag(rootTag);
+        showFragment(fragmentManager, fragment);
     }
 }

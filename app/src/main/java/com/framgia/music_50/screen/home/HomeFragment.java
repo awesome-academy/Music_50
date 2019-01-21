@@ -75,7 +75,7 @@ public class HomeFragment extends Fragment
             Toast.makeText(getContext(), ((Track) item).getTitle(), Toast.LENGTH_SHORT).show();
         } else if (item instanceof Genre) {
             mNavigator.goNextChildFragment(getFragmentManager(), R.id.layoutContainer,
-                    PlaylistFragment.newInstance((Genre) item), true, PlaylistFragment.TAG);
+                    PlaylistFragment.newInstance((Genre) item), true, HomeFragment.TAG);
         }
     }
 

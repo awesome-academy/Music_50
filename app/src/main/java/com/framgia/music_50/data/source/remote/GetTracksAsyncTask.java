@@ -2,6 +2,7 @@ package com.framgia.music_50.data.source.remote;
 
 import android.os.AsyncTask;
 import com.framgia.music_50.data.model.Track;
+import com.framgia.music_50.utils.Constant;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -79,6 +80,9 @@ public class GetTracksAsyncTask extends AsyncTask<String, Void, List<Track>> {
                     .setDownloadable(object.getBoolean(Track.TrackEntry.DOWNLOADABLE))
                     .setDownloadUrl(object.getString(Track.TrackEntry.DOWNLOAD_URL))
                     .setDuration(object.getInt(Track.TrackEntry.DURATION))
+                    .setStreamUrl(Constant.STREAM_BASE_URL
+                            + object.getLong(Track.TrackEntry.ID)
+                            + Constant.STREAM)
                     .build();
             tracks.add(track);
         }
