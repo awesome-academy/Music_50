@@ -84,21 +84,18 @@ public class PlayActivity extends BaseActivity
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(PlayActivity.this, TrackService.class);
-        bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mIsBound) {
-            unbindService(mServiceConnection);
-            mIsBound = false;
+        if (!mIsBound) {
+            Intent intent = new Intent(PlayActivity.this, TrackService.class);
+            bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
         }
     }
 
     @Override
     protected void onDestroy() {
+        if (mIsBound) {
+            unbindService(mServiceConnection);
+            mIsBound = false;
+        }
         mTrackService.setOnMediaChangeListener(null);
         super.onDestroy();
     }
