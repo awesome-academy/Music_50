@@ -10,27 +10,30 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.framgia.music_50.R;
 import com.framgia.music_50.data.model.Track;
 import com.framgia.music_50.screen.BaseActivity;
 import com.framgia.music_50.service.ServiceContract;
 import com.framgia.music_50.service.TrackService;
 import com.framgia.music_50.utils.Common;
-import com.framgia.music_50.utils.Constant;
 import com.framgia.music_50.utils.LoopType;
 
 public class PlayActivity extends BaseActivity
         implements ServiceContract.OnMediaPlayerChange, View.OnClickListener,
         SeekBar.OnSeekBarChangeListener {
     private final static String EXTRA_TRACK = "EXTRA_TRACK";
+    private final static String MP3_EXTENSION = ".mp3";
     private final int TIME_UPDATE_SEEK_BAR = 100;
     private final int DOWNLOAD_REQUEST_CODE = 2019;
     private ImageView mBackImageView;
@@ -57,6 +60,8 @@ public class PlayActivity extends BaseActivity
             TrackService.TrackBinder trackBinder = (TrackService.TrackBinder) binder;
             mTrackService = trackBinder.getService();
             mTrackService.setOnMediaChangeListener(PlayActivity.this);
+            updateSeekBar();
+            onMediaPlayerStateChange(mTrackService.isPlaying());
             mIsBound = true;
         }
 
@@ -156,6 +161,7 @@ public class PlayActivity extends BaseActivity
         mArtistNameTextView.setText(track.getArtistName());
         Glide.with(getApplicationContext())
                 .load(Common.getBigImageUrl(track.getArtworkUrl()))
+                .apply(new RequestOptions().error(R.drawable.ic_music_player))
                 .into(mArtworkImageView);
         mTotalDurationTextView.setText(Common.convertTime(track.getDuration()));
         mSeekBar.setMax(track.getDuration());
@@ -287,11 +293,13 @@ public class PlayActivity extends BaseActivity
             return;
         }
         DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-        Uri uri = Uri.parse(
-                track.getDownloadUrl() + getString(R.string.question_symbol) + Constant.CLIENT_ID);
-        manager.enqueue(new DownloadManager.Request(uri).setAllowedNetworkTypes(
-                DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                .setAllowedOverRoaming(false)
+        Uri uri = Uri.parse(track.getStreamUrl());
+        manager.enqueue(new DownloadManager.Request(uri).setNotificationVisibility(
+                DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI
+                        | DownloadManager.Request.NETWORK_MOBILE)
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC,
+                        track.getTitle() + MP3_EXTENSION)
                 .setDescription(track.getTitle()));
     }
 }

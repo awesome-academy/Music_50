@@ -248,10 +248,14 @@ public class TrackService extends Service
         return mTracks.get(mPosition);
     }
 
+    public boolean isPlaying() {
+        return mMediaPlayer != null && mMediaPlayer.isPlaying();
+    }
+
     private void createNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_LOW);
             channel.setSound(null, null);
             channel.enableVibration(false);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);

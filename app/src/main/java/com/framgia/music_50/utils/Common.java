@@ -15,6 +15,6 @@ public class Common {
     }
 
     public static String getBigImageUrl(String url) {
-        return url.replace(DEFAULT_IMAGE_FORMAT, BIG_IMAGE_FORMAT);
+        return url != null ? url.replace(DEFAULT_IMAGE_FORMAT, BIG_IMAGE_FORMAT) : "";
     }
 }
