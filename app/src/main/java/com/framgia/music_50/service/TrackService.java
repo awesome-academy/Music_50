@@ -20,7 +20,6 @@ import com.bumptech.glide.request.target.NotificationTarget;
 import com.framgia.music_50.R;
 import com.framgia.music_50.data.model.Track;
 import com.framgia.music_50.screen.main.MainActivity;
-import com.framgia.music_50.utils.Constant;
 import com.framgia.music_50.utils.LoopType;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -125,7 +124,7 @@ public class TrackService extends Service
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
-            mMediaPlayer.setDataSource(Constant.STREAM_BASE_URL + track.getId() + Constant.STREAM);
+            mMediaPlayer.setDataSource(track.getStreamUrl());
         } catch (IOException e) {
             e.printStackTrace();
         }

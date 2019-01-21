@@ -22,6 +22,7 @@ import com.framgia.music_50.data.repository.TrackRepository;
 import com.framgia.music_50.data.source.local.TrackLocalDataSource;
 import com.framgia.music_50.data.source.remote.TrackRemoteDataSource;
 import com.framgia.music_50.screen.BaseFragment;
+import com.framgia.music_50.screen.home.HomeFragment;
 import com.framgia.music_50.screen.home.adapter.OnAttachedPlaylistFragment;
 import com.framgia.music_50.screen.play.PlayActivity;
 import com.framgia.music_50.screen.playlist.adapter.PlaylistAdapter;
@@ -162,7 +163,7 @@ public class PlaylistFragment extends BaseFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mNavigator.removeFragment(getFragmentManager(), TAG);
+                mNavigator.removeFragment(getFragmentManager(), HomeFragment.TAG);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

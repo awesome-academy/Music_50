@@ -1,5 +1,6 @@
 package com.framgia.music_50.data.repository;
 
+import android.content.ContentResolver;
 import com.framgia.music_50.data.model.Genre;
 import com.framgia.music_50.data.model.Track;
 import com.framgia.music_50.data.source.TrackDataSource;
@@ -34,5 +35,10 @@ public class TrackRepository {
 
     public void getTracksByGenre(String genreType, OnFetchDataListener<Track> listener) {
         mRemoteDataSource.getTracksByGenre(genreType, listener);
+    }
+
+    public void getLocalTracks(ContentResolver contentResolver,
+            OnFetchDataListener<Track> listener) {
+        mLocalDataSource.getLocalTracks(contentResolver, listener);
     }
 }

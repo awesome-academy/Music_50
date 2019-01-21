@@ -12,6 +12,7 @@ public class Track implements Parcelable {
     private int mDuration;
     private boolean mDownloadable;
     private String mDownloadUrl;
+    private String mStreamUrl;
 
     private Track(TrackBuilder builder) {
         mId = builder.mId;
@@ -22,6 +23,7 @@ public class Track implements Parcelable {
         mDuration = builder.mDuration;
         mDownloadable = builder.mDownloadable;
         mDownloadUrl = builder.mDownloadUrl;
+        mStreamUrl = builder.mStreamUrl;
     }
 
     private Track(Parcel in) {
@@ -33,6 +35,7 @@ public class Track implements Parcelable {
         mDuration = in.readInt();
         mDownloadable = in.readByte() != 0;
         mDownloadUrl = in.readString();
+        mStreamUrl = in.readString();
     }
 
     @Override
@@ -45,6 +48,7 @@ public class Track implements Parcelable {
         dest.writeInt(mDuration);
         dest.writeByte((byte) (mDownloadable ? 1 : 0));
         dest.writeString(mDownloadUrl);
+        dest.writeString(mStreamUrl);
     }
 
     @Override
@@ -128,6 +132,14 @@ public class Track implements Parcelable {
         mId = id;
     }
 
+    public String getStreamUrl() {
+        return mStreamUrl;
+    }
+
+    public void setStreamUrl(String streamUrl) {
+        mStreamUrl = streamUrl;
+    }
+
     public static class TrackBuilder {
         private long mId;
         private String mTitle;
@@ -137,6 +149,7 @@ public class Track implements Parcelable {
         private int mDuration;
         private boolean mDownloadable;
         private String mDownloadUrl;
+        private String mStreamUrl;
 
         public TrackBuilder() {
         }
@@ -178,6 +191,11 @@ public class Track implements Parcelable {
 
         public TrackBuilder setDownloadUrl(String downloadUrl) {
             mDownloadUrl = downloadUrl;
+            return this;
+        }
+
+        public TrackBuilder setStreamUrl(String streamUrl) {
+            mStreamUrl = streamUrl;
             return this;
         }
 
