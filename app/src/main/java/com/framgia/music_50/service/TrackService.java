@@ -65,7 +65,6 @@ public class TrackService extends Service
     public void onCreate() {
         super.onCreate();
         mTrackBinder = new TrackBinder();
-        createNotification();
     }
 
     @Override
@@ -73,6 +72,9 @@ public class TrackService extends Service
         if (intent != null) {
             List<Track> tracks = intent.getParcelableArrayListExtra(EXTRA_TRACK_LIST);
             if (tracks != null) {
+                if (mNotification == null) {
+                    createNotification();
+                }
                 mPosition = intent.getIntExtra(EXTRA_TRACK_POSITION, DEFAULT_POSITION);
                 mTracks = tracks;
                 mLoopType = LoopType.LOOP_ALL;
@@ -133,6 +135,9 @@ public class TrackService extends Service
         if (mOnMediaPlayerChange != null) {
             mOnMediaPlayerChange.onTrackChange(track);
         }
+        if (mOnMiniControllerChange != null) {
+            mOnMiniControllerChange.onTrackChange(track);
+        }
         updateNotificationUI(track);
     }
 
@@ -144,6 +149,9 @@ public class TrackService extends Service
             mOnMediaPlayerChange.onMediaPlayerStart();
             mOnMediaPlayerChange.onMediaPlayerStateChange(true);
         }
+        if (mOnMiniControllerChange != null) {
+            mOnMiniControllerChange.onMediaPlayerStateChange(true);
+        }
         updatePlayPauseNotification(true);
     }
 
@@ -151,6 +159,9 @@ public class TrackService extends Service
     public void onCompletion(MediaPlayer mp) {
         if (mOnMediaPlayerChange != null) {
             mOnMediaPlayerChange.onMediaPlayerStateChange(false);
+        }
+        if (mOnMiniControllerChange != null) {
+            mOnMiniControllerChange.onMediaPlayerStateChange(false);
         }
         switch (mLoopType) {
             case LoopType.LOOP_ALL:
@@ -177,10 +188,16 @@ public class TrackService extends Service
             if (mOnMediaPlayerChange != null) {
                 mOnMediaPlayerChange.onMediaPlayerStateChange(false);
             }
+            if (mOnMiniControllerChange != null) {
+                mOnMiniControllerChange.onMediaPlayerStateChange(false);
+            }
         } else {
             mMediaPlayer.start();
             if (mOnMediaPlayerChange != null) {
                 mOnMediaPlayerChange.onMediaPlayerStateChange(true);
+            }
+            if (mOnMiniControllerChange != null) {
+                mOnMiniControllerChange.onMediaPlayerStateChange(true);
             }
         }
         updatePlayPauseNotification(mMediaPlayer.isPlaying());
@@ -250,6 +267,10 @@ public class TrackService extends Service
 
     public boolean isPlaying() {
         return mMediaPlayer != null && mMediaPlayer.isPlaying();
+    }
+
+    public boolean isMediaPlayerPlaying() {
+        return mTracks != null;
     }
 
     private void createNotification() {
