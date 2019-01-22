@@ -41,4 +41,8 @@ public class TrackRepository {
             OnFetchDataListener<Track> listener) {
         mLocalDataSource.getLocalTracks(contentResolver, listener);
     }
+
+    public void querySearch(String keyword, OnFetchDataListener<Track> listener) {
+        mRemoteDataSource.querySearch(keyword, listener);
+    }
 }
