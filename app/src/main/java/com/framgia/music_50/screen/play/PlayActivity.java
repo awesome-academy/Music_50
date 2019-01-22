@@ -242,6 +242,7 @@ public class PlayActivity extends BaseActivity
                 break;
             case R.id.imageViewShuffle:
                 mTrackService.shuffleTracks();
+                break;
             case R.id.imageViewDownloadTrack:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
