@@ -16,6 +16,8 @@ public class Constant {
     public static final int TRACK_LIMIT = 10;
     public static final String TRENDING_MUSIC_URL =
             BASE_URL + CHART + KIND + LIMIT + TRACK_LIMIT + CLIENT_ID;
+    public static final String QUERY = "q=";
+    public static final String SEARCH_TRACK_URL = BASE_URL + "search/tracks?";
     public static final String STREAM_BASE_URL = "https://api.soundcloud.com/tracks/";
     public static final String STREAM = "/stream?" + CLIENT_ID;
 }

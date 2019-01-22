@@ -1,5 +1,6 @@
 package com.framgia.music_50.screen.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -16,7 +17,9 @@ import com.framgia.music_50.data.source.local.TrackLocalDataSource;
 import com.framgia.music_50.data.source.remote.TrackRemoteDataSource;
 import com.framgia.music_50.screen.home.adapter.GenreAdapter;
 import com.framgia.music_50.screen.home.adapter.TrendingTrackAdapter;
+import com.framgia.music_50.screen.play.PlayActivity;
 import com.framgia.music_50.screen.playlist.PlaylistFragment;
+import com.framgia.music_50.service.TrackService;
 import com.framgia.music_50.utils.Navigator;
 import com.framgia.music_50.utils.OnItemRecyclerViewClickListener;
 import java.util.List;
@@ -26,6 +29,7 @@ public class HomeFragment extends Fragment
     public static final String TAG = HomeFragment.class.getSimpleName();
     private TrendingTrackAdapter mTrendingTrackAdapter;
     private GenreAdapter mGenreAdapter;
+    private List<Track> mTrendingTracks;
     private Navigator mNavigator;
 
     public static HomeFragment newInstance() {
@@ -48,6 +52,7 @@ public class HomeFragment extends Fragment
     @Override
     public void onGetTrendingTracksSuccess(List<Track> tracks) {
         if (tracks != null) {
+            mTrendingTracks = tracks;
             mTrendingTrackAdapter.updateData(tracks);
         }
     }
@@ -72,7 +77,12 @@ public class HomeFragment extends Fragment
     @Override
     public void onItemClickListener(Object item) {
         if (item instanceof Track) {
-            Toast.makeText(getContext(), ((Track) item).getTitle(), Toast.LENGTH_SHORT).show();
+            startActivity(PlayActivity.getIntent(getContext(), (Track) item));
+            if (getActivity() != null) {
+                Intent intent = TrackService.getServiceIntent(getContext(), mTrendingTracks,
+                        mTrendingTracks.indexOf(item));
+                getActivity().startService(intent);
+            }
         } else if (item instanceof Genre) {
             mNavigator.goNextChildFragment(getFragmentManager(), R.id.layoutContainer,
                     PlaylistFragment.newInstance((Genre) item), true, HomeFragment.TAG);

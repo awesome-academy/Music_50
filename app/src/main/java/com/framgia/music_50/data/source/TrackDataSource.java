@@ -16,5 +16,7 @@ public interface TrackDataSource {
         void getTrendingTracks(OnFetchDataListener<Track> listener);
 
         void getTracksByGenre(String genreType, OnFetchDataListener<Track> listener);
+
+        void querySearch(String keyword, OnFetchDataListener<Track> listener);
     }
 }

@@ -3,6 +3,7 @@ package com.framgia.music_50.data.source.remote;
 import android.os.AsyncTask;
 import com.framgia.music_50.data.model.Track;
 import com.framgia.music_50.utils.Constant;
+import com.framgia.music_50.utils.QueryType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,8 +22,10 @@ import static com.framgia.music_50.utils.Constant.USER;
 public class GetTracksAsyncTask extends AsyncTask<String, Void, List<Track>> {
     private OnFetchDataListener<Track> mListener;
     private Exception mException;
+    private int mQueryType;
 
-    GetTracksAsyncTask(OnFetchDataListener<Track> listener) {
+    GetTracksAsyncTask(int queryType, OnFetchDataListener<Track> listener) {
+        mQueryType = queryType;
         mListener = listener;
     }
 
@@ -31,7 +34,11 @@ public class GetTracksAsyncTask extends AsyncTask<String, Void, List<Track>> {
         List<Track> tracks = null;
         try {
             String json = getDataFromUrl(strings[0]);
-            tracks = readDataFromJson(json);
+            if (mQueryType == QueryType.GET_TRACKS) {
+                tracks = readDataFromJson(json);
+            } else if (mQueryType == QueryType.SEARCH_TRACK) {
+                tracks = readDataFromSearchJson(json);
+            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
             mException = e;
@@ -71,6 +78,30 @@ public class GetTracksAsyncTask extends AsyncTask<String, Void, List<Track>> {
         JSONArray jsonArray = rootObject.getJSONArray(COLLECTION);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject object = jsonArray.getJSONObject(i).getJSONObject(Track.TrackEntry.TRACK);
+            Track track = new Track.TrackBuilder().setId(object.getLong(Track.TrackEntry.ID))
+                    .setTitle(object.getString(Track.TrackEntry.TITLE))
+                    .setArtworkUrl(object.getString(Track.TrackEntry.ARTWORK_URL))
+                    .setArtistName(
+                            object.getJSONObject(USER).getString(Track.TrackEntry.ARTIST_NAME))
+                    .setAvatarUrl(object.getJSONObject(USER).getString(Track.TrackEntry.AVATAR_URL))
+                    .setDownloadable(object.getBoolean(Track.TrackEntry.DOWNLOADABLE))
+                    .setDownloadUrl(object.getString(Track.TrackEntry.DOWNLOAD_URL))
+                    .setDuration(object.getInt(Track.TrackEntry.DURATION))
+                    .setStreamUrl(Constant.STREAM_BASE_URL
+                            + object.getLong(Track.TrackEntry.ID)
+                            + Constant.STREAM)
+                    .build();
+            tracks.add(track);
+        }
+        return tracks;
+    }
+
+    private List<Track> readDataFromSearchJson(String json) throws JSONException {
+        List<Track> tracks = new ArrayList<>();
+        JSONObject rootObject = new JSONObject(json);
+        JSONArray jsonArray = rootObject.getJSONArray(COLLECTION);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject object = jsonArray.getJSONObject(i);
             Track track = new Track.TrackBuilder().setId(object.getLong(Track.TrackEntry.ID))
                     .setTitle(object.getString(Track.TrackEntry.TITLE))
                     .setArtworkUrl(object.getString(Track.TrackEntry.ARTWORK_URL))
