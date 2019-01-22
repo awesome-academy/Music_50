@@ -10,33 +10,26 @@
     tools:context="com.framgia.music_50.screen.search.SearchFragment"
     >
     <TextView
-        android:id="@+id/textViewEmptyText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
-        android:text="@string/find_your_music"
-        android:textColor="@color/color_grey_50"
-        app:layout_constraintEnd_toEndOf="@+id/imageViewEmptyResult"
-        app:layout_constraintStart_toStartOf="@+id/imageViewEmptyResult"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewEmptyResult"
-        />
-    <TextView
         android:id="@+id/textViewSearchTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_24"
         android:text="@string/tab_search"
         android:textColor="@android:color/white"
         android:textSize="@dimen/sp_24"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         />
     <EditText
         android:id="@+id/editTextSearch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@drawable/edit_text_search_bg"
         android:hint="@string/search_hint"
@@ -51,7 +44,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewSearchTitle"
-        app:layout_constraintWidth_percent="0.75"
         />
 
     <android.support.v7.widget.RecyclerView
@@ -59,12 +51,26 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_8"
+        android:focusableInTouchMode="true"
         android:orientation="vertical"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editTextSearch"
+        app:layout_constraintVertical_bias="1.0"
+        />
+    <TextView
+        android:id="@+id/textViewEmptyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:text="@string/find_your_music"
+        android:textColor="@color/color_grey_50"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewEmptyResult"
+        app:layout_constraintStart_toStartOf="@+id/imageViewEmptyResult"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewEmptyResult"
         />
     <ImageView
         android:id="@+id/imageViewEmptyResult"
@@ -94,7 +100,7 @@
         android:id="@+id/imageViewSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
         android:contentDescription="@string/image_description"
         android:src="@drawable/ic_tab_search"
         android:stateListAnimator="@animator/view_click_anim"
